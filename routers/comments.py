@@ -1,3 +1,5 @@
+# routers/comments.py
+
 from typing import Annotated
 from datetime import date, datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
@@ -36,7 +38,6 @@ def check_auto_reply(mapper, connection, target):
         post_text = post.content
         comment_text = target.content
 
-
         if post_owner_id == target.created_by:
             print("auto reply does not work on itself")
             return False
@@ -50,10 +51,16 @@ def check_auto_reply(mapper, connection, target):
         scheduler.add_job(
             auto_reply,
             "date",
-            run_date=datetime.now() + timedelta(seconds=auto_reply_model.timer.total_seconds()),
-            args=(target.post_id, target.created_by, post_text, comment_text, post_owner_id),
+            run_date=datetime.now()
+            + timedelta(seconds=auto_reply_model.timer.total_seconds()),
+            args=(
+                target.post_id,
+                target.created_by,
+                post_text,
+                comment_text,
+                post_owner_id,
+            ),
         )
-
 
 
 def auto_reply(post_id, comment_owner_id, post_text, comment_text, post_owner_id):
@@ -76,7 +83,11 @@ def auto_reply(post_id, comment_owner_id, post_text, comment_text, post_owner_id
         db.commit()
 
 
-@router.post("/post/{post_id}/create-comments", operation_id="create_comment_for_post", status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/post/{post_id}/create-comments",
+    operation_id="create_comment_for_post",
+    status_code=status.HTTP_201_CREATED,
+)
 def create_comment(
     user: user_dependency,
     db: db_dependency,

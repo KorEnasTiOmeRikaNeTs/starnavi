@@ -1,3 +1,5 @@
+# routers/auth.py
+
 import os
 
 from typing import Annotated
@@ -21,7 +23,6 @@ ALGORITHM = os.getenv("ALGORITHM")
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/login")
-
 
 
 db_dependency = Annotated[Session, Depends(get_db)]

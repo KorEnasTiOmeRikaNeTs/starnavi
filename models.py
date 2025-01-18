@@ -1,5 +1,7 @@
+# models.py
+
 from database import Base
-from sqlalchemy import Column, Integer, String, Date, Interval, Enum, ForeignKey, func
+from sqlalchemy import Column, Integer, String, DateTime, Interval, Enum, ForeignKey, func, Date
 from sqlalchemy.orm import relationship
 
 from enum import Enum as PyEnum
@@ -34,7 +36,7 @@ class Posts(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
-    created_at = Column(Date, server_default=func.now())
+    created_at = Column(DateTime, server_default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
     status = Column(Enum(Status), nullable=False)
 
@@ -47,7 +49,7 @@ class Comments(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     content = Column(String, nullable=False)
-    created_at = Column(Date, server_default=func.now())
+    created_at = Column(DateTime, server_default=func.now())
     created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
     post_id = Column(Integer, ForeignKey("posts.id"), nullable=False)
     status = Column(Enum(Status), nullable=False)
